@@ -18,9 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="grid grid-cols-[1fr_auto] overflow-hidden">
+        <div className="grid grid-cols-[auto_1fr] overflow-hidden">
           <NavBar />
-          <main className="overflow-auto h-dvh">{children}</main>
+          <main className="h-dvh overflow-auto p-10">{children}</main>
         </div>
       </body>
     </html>

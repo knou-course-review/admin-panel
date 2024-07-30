@@ -7,7 +7,7 @@ import { IconButton } from "@mui/material";
 export default function NavBar() {
   const logout = () => {};
   return (
-    <div className="flex flex-col w-52 max-h-dvh p-6 list-none bg-slate-950 text-white">
+    <div className="flex flex-col w-52 max-h-dvh p-6 list-none bg-neutral-950 text-white">
       <div className="mb-8 font-bold">user_</div>
       <li className="mb-4">
         <Link href="/courses">강의 목록</Link>
