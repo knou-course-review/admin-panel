@@ -13,7 +13,7 @@ export default function CoursesContent() {
     <>
       <div className="flex gap-4 mb-4">
         <Button variant="contained" className="mr-auto">
-          <Link href="/new">강의 등록</Link>
+          <Link href="/courses/new">강의 등록</Link>
         </Button>
         <Select size="small" value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
           <MenuItem value={"학과 선택"}>학과 선택</MenuItem>
