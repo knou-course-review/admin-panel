@@ -6,7 +6,7 @@ export default function CourseTable() {
   return (
     <table className="table-fixed w-full text-center">
       <thead>
-        <tr className="border border-b-2 font-bold border-r-neutral-300 border-l-neutral-300 border-t-neutral-300 border-neutral-400 bg-neutral-300">
+        <tr className="border border-b-2 font-bold border-r-neutral-300 border-l-neutral-300 border-t-neutral-300 border-neutral-400 bg-neutral-300 dark:bg-neutral-700">
           <td className="xl:w-1/3 p-4">과목명</td>
           <td className="p-4">교수</td>
           <td className="p-4">교과</td>
