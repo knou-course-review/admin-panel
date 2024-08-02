@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
-import NavBar from "@/components/login/NavBar";
+import NavBar from "@/components/NavBar";
 import ThemeContextProvider from "@/contexts/theme/ThemeContextProvider";
 import type { Metadata } from "next";
 import "./globals.css";
