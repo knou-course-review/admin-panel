@@ -14,22 +14,23 @@ export const api = {
   post: async (path: string, data: { [key: string]: number | boolean | string }, token?: string) => {
     const res = await fetch(`${process.env.SERVER_URL}${path}`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: "Bearer " + token }),
+      },
       body: JSON.stringify(data),
-      ...(token && { Authorization: "Bearer " + token }),
     });
     return res;
   },
-  put: async (path: string, data: { [key: string]: number | boolean | string }) => {
+  put: async (path: string, data: { [key: string]: number | boolean | string }, token?: string) => {
     const res = await fetch(`${process.env.SERVER_URL}${path}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        ...(token && { Authorization: "Bearer " + token }),
       },
       body: JSON.stringify(data),
     });
-    if (res.ok) {
-      return res;
-    }
-    throw new Error(`${res.status} error: ${res.statusText}`);
+    return res;
   },
 };
