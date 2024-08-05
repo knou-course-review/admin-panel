@@ -25,6 +25,7 @@ export async function addProfessor(formData: FormData) {
       if (body.code === 200) {
         return { isValid: true, data: body.data };
       }
+      return { isValid: false, errors: { unknown: [`* ${body.message}`] } };
     } catch (e) {
       console.log(e);
     }
