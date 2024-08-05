@@ -2,6 +2,7 @@
 
 import { Button } from "@mui/material";
 import ModalFrame from "../ModalFrame";
+import { deleteDepartment } from "@/actions/department";
 
 type DepartmentDeleteModalProps = {
   isShowing: boolean;
@@ -16,9 +17,10 @@ export default function DepartmentDeleteModal({
   departmentName,
   closeModal,
 }: DepartmentDeleteModalProps) {
-  const handleDelete = () => {
-    // Request to server
-    closeModal();
+  const handleDelete = async () => {
+    const res = await deleteDepartment(id);
+    if (res.isValid) return closeModal();
+    alert(res.error);
   };
 
   if (!isShowing) return null;
