@@ -10,8 +10,13 @@ import { Button, FormHelperText, IconButton, TextField } from "@mui/material";
 import useForm from "@/hooks/useForm";
 import { login } from "@/actions/login";
 
+const initValues = [
+  { key: "username", value: "" },
+  { key: "password", value: "" },
+];
+
 export default function LoginForm() {
-  const { formData, updateFormData } = useForm(["username", "password"]);
+  const { formData, updateFormData } = useForm(initValues);
   const [showPassword, setShowPassword] = useState(false);
   const [isCredentialError, setIsCredentialError] = useState(false);
   const [pending, setPending] = useState(false);

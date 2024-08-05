@@ -1,29 +1,30 @@
 import { useState } from "react";
 
-type FormDataValue = string | number | boolean;
-type UseFormProps = string[];
-type FormStateProps = {
+type UseFormProps = { key: string; value: CourseFormValue }[];
+type FormStateProps<T> = {
   [key: string]: {
-    value: FormDataValue;
+    value: T;
     error: boolean;
     errorMsg: string;
   };
 };
 
-const createFormData = (keys: UseFormProps) => {
-  return keys.reduce<FormStateProps>((state, key) => {
-    state[key] = { value: "", error: false, errorMsg: "" };
+type CourseFormValue = string | number | null;
+
+const createFormData = (initialKeyValues: UseFormProps) => {
+  return initialKeyValues.reduce<FormStateProps<CourseFormValue>>((state, { key, value }) => {
+    state[key] = { value, error: false, errorMsg: "" };
     return state;
   }, {});
 };
 
-export default function useForm(keys: UseFormProps) {
-  const [formData, setFormData] = useState(createFormData(keys));
+export default function useForm(initialKeyValues: UseFormProps) {
+  const [formData, setFormData] = useState(createFormData(initialKeyValues));
 
-  const updateFormData = (key: string, value: FormDataValue, error: boolean = false, errorMsg: string = "") => {
+  const updateFormData = (key: string, value: CourseFormValue, error: boolean = false, errorMsg: string = "") => {
     setFormData((prev) => {
       const newData = { ...prev };
-      newData[key as keyof FormStateProps] = { value, error, errorMsg };
+      newData[key as keyof FormStateProps<CourseFormValue>] = { value, error, errorMsg };
       return newData;
     });
   };
