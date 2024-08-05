@@ -4,7 +4,7 @@ import { type FormEvent, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Autocomplete, Button, FormLabel, TextField } from "@mui/material";
 import ProfessorDeleteModal from "./ProfessorDeleteModal";
-import { deleteProfessor } from "@/actions/professor";
+import { deleteProfessor, updateProfessor } from "@/actions/professor";
 import { EditContext } from "@/contexts/edit/EditContextProvider";
 import type { ProfessorData } from "./ProfessorsContent";
 
@@ -32,15 +32,21 @@ export default function EditProfessorForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // const formElem = e.target as HTMLFormElement;
-    // const res = await updateProfessor(new FormData(formElem));
-    // if (res.isValid) {
-    //   return redirectPage();
-    // }
-    // if (res.errors) {
-    //   return setErrors(res.errors);
-    // }
-    // setErrors({ unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] });
+    const formElem = e.target as HTMLFormElement;
+    const formElemData = new FormData(formElem);
+    const formData = {
+      professorName: formElemData.get("professorName"),
+      departmentName: formElemData.get("departmentName"),
+    };
+    if (JSON.stringify(formData) === JSON.stringify(data) || !data) return;
+    const res = await updateProfessor(data.id, formData);
+    if (res.isValid) {
+      return redirectPage();
+    }
+    if (res.errors) {
+      return setErrors(res.errors);
+    }
+    setErrors({ unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] });
   };
 
   const handleDelete = async () => {
