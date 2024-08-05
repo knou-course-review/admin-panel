@@ -8,7 +8,7 @@ export type EditContextProps = EditContextState;
 
 export type EditContextState = {
   data: EditContextData | null;
-  updateData: (newData: EditContextData) => void;
+  updateData: (newData: EditContextData | null) => void;
 };
 
 export type EditContextData = ProfessorData | DepartmentData;
@@ -17,6 +17,6 @@ export const EditContext = createContext<EditContextProps>({ data: null, updateD
 
 export const EditContextProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<EditContextData | null>(null);
-  const updateData = (newData: EditContextData) => setData(newData);
+  const updateData = (newData: EditContextData | null) => setData(newData);
   return <EditContext.Provider value={{ data, updateData }}>{children}</EditContext.Provider>;
 };

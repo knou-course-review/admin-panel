@@ -4,6 +4,7 @@ import NavBar from "@/components/NavBar";
 import ThemeContextProvider from "@/contexts/theme/ThemeContextProvider";
 import type { Metadata } from "next";
 import "./globals.css";
+import { EditContextProvider } from "@/contexts/edit/EditContextProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,10 +23,12 @@ export default function RootLayout({
       <body className={inter.className}>
         <InitColorSchemeScript defaultMode="system" />
         <ThemeContextProvider>
-          <div className="grid grid-cols-[auto_1fr] overflow-hidden">
-            <NavBar />
-            <main className="h-dvh overflow-auto p-10">{children}</main>
-          </div>
+          <EditContextProvider>
+            <div className="grid grid-cols-[auto_1fr] overflow-hidden">
+              <NavBar />
+              <main className="h-dvh overflow-auto p-10">{children}</main>
+            </div>
+          </EditContextProvider>
         </ThemeContextProvider>
       </body>
     </html>
