@@ -33,4 +33,14 @@ export const api = {
     });
     return res;
   },
+  delete: async (path: string, token: string) => {
+    const res = await fetch(`${process.env.SERVER_URL}${path}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+    return res;
+  },
 };
