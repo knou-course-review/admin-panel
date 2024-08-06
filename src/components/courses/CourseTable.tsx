@@ -1,24 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import CourseTableRow from "./CourseTableRow";
 import type { CourseData } from "./CoursesContent";
-import CourseDeleteModal from "./CourseDeleteModal";
 
 type CourseTableProps = {
   courses: CourseData[];
 };
 
 export default function CourseTable({ courses }: CourseTableProps) {
-  const [isShowing, setIsShowing] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<null | { id: string; courseName: string }>(null);
-
-  const openModal = (id: string, courseName: string) => {
-    setIsShowing(true);
-    setSelectedCourse({ id, courseName });
-  };
-  const closeModal = () => setIsShowing(false);
-
   if (courses.length < 1) return <div className="w-full text-center">현재 등록된 강의가 없습니다.</div>;
   return (
     <>
@@ -38,18 +25,10 @@ export default function CourseTable({ courses }: CourseTableProps) {
         </thead>
         <tbody>
           {courses.map((data) => (
-            <CourseTableRow key={data.id} courseData={{ ...data }} openModal={openModal} />
+            <CourseTableRow key={data.id} courseData={{ ...data }} />
           ))}
         </tbody>
       </table>
-      {isShowing && selectedCourse && (
-        <CourseDeleteModal
-          isShowing={isShowing}
-          id={selectedCourse.id}
-          courseName={selectedCourse.courseName}
-          closeModal={closeModal}
-        />
-      )}
     </>
   );
 }

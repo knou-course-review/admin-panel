@@ -1,16 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { Delete, Edit } from "@mui/icons-material";
+import { useContext } from "react";
+import { useRouter } from "next/navigation";
+import { Edit } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
+import { EditContext } from "@/contexts/edit/EditContextProvider";
 import type { CourseData } from "./CoursesContent";
 
 type CourseTableRowProps = {
   courseData: CourseData;
-  openModal: (id: string, courseName: string) => void;
 };
 
-export default function CourseTableRow({ courseData, openModal }: CourseTableRowProps) {
+export default function CourseTableRow({ courseData }: CourseTableRowProps) {
+  const router = useRouter();
+  const { updateData } = useContext(EditContext);
+  const handleClick = () => {
+    updateData(courseData);
+    router.push(`/courses/edit/${courseData.id.toString()}`);
+  };
   return (
     <tr className="border border-neutral-400">
       <td className="p-2">{courseData.courseName}</td>
@@ -22,13 +29,8 @@ export default function CourseTableRow({ courseData, openModal }: CourseTableRow
       <td className="p-2">{courseData.classType}</td>
       <td className="p-2">{courseData.classification}</td> */}
       <td className="p-2">
-        <Link href={`/courses/edit/${courseData.id.toString()}`}>
-          <IconButton>
-            <Edit fontSize="small" />
-          </IconButton>
-        </Link>
-        <IconButton onClick={() => openModal(courseData.id.toString(), courseData.courseName)}>
-          <Delete fontSize="small" />
+        <IconButton onClick={handleClick}>
+          <Edit fontSize="small" />
         </IconButton>
       </td>
     </tr>
