@@ -2,6 +2,7 @@
 
 import { type FormEvent, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Delete } from "@mui/icons-material";
 import { Autocomplete, Button, FormLabel, MenuItem, Select, TextField } from "@mui/material";
 import CourseDeleteModal from "./CourseDeleteModal";
 import useForm from "@/hooks/useForm";
@@ -155,7 +156,7 @@ export default function EditCourseForm() {
   if (!data) return null;
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
         <table>
           <tbody>
             <tr>
@@ -286,11 +287,13 @@ export default function EditCourseForm() {
             </tr>
           </tbody>
         </table>
-        <Button variant="contained" onClick={openModal} disableElevation>
-          삭제
-        </Button>
+        <p className="self-end">
+          <Button variant="text" onClick={openModal} disableElevation>
+            <Delete fontSize="small" /> 삭제
+          </Button>
+        </p>
         <Button type="submit" variant="contained" disableElevation>
-          등록하기
+          수정하기
         </Button>
       </form>
       {isShowing && data && (

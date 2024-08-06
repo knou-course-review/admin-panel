@@ -2,6 +2,7 @@
 
 import { type FormEvent, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Delete } from "@mui/icons-material";
 import { Autocomplete, Button, FormLabel, TextField } from "@mui/material";
 import ProfessorDeleteModal from "./ProfessorDeleteModal";
 import { deleteProfessor, updateProfessor } from "@/actions/professor";
@@ -68,7 +69,7 @@ export default function EditProfessorForm() {
   if (!data) return null;
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
         <table>
           <tbody>
             <tr>
@@ -93,9 +94,11 @@ export default function EditProfessorForm() {
           </tbody>
         </table>
         {errors?.unknown && <p>{errors.unknown[0]}</p>}
-        <Button variant="contained" onClick={openModal} disableElevation>
-          삭제
-        </Button>
+        <p className="self-end">
+          <Button variant="text" onClick={openModal} disableElevation>
+            <Delete fontSize="small" /> 삭제
+          </Button>
+        </p>
         <Button type="submit" variant="contained" disableElevation>
           수정하기
         </Button>
