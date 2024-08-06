@@ -1,10 +1,9 @@
 import EditProfessorForm from "@/components/professors/EditProfessorForm";
 
-export default function EditProfessor() {
+export default function EditProfessor({ params: { id } }: { params: { id: string } }) {
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-8">교수 정보 수정</h1>
-      <EditProfessorForm />
+      <EditProfessorForm professorId={id} />
     </div>
   );
 }

@@ -1,45 +1,59 @@
 "use client";
 
-import { type FormEvent, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, type FormEvent } from "react";
+import { redirect, useRouter } from "next/navigation";
 import { Delete } from "@mui/icons-material";
 import { Autocomplete, Button, FormLabel, TextField } from "@mui/material";
 import ProfessorDeleteModal from "./ProfessorDeleteModal";
 import { deleteProfessor, updateProfessor } from "@/actions/professor";
-import { EditContext } from "@/contexts/edit/EditContextProvider";
 import type { ProfessorData } from "./ProfessorsContent";
 
-export default function EditProfessorForm() {
+export default function EditProfessorForm({ professorId }: { professorId: string }) {
   const router = useRouter();
   const [departments, setDepartments] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isShowing, setIsShowing] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string[] | undefined } | undefined>();
-  const { data, updateData } = useContext(EditContext);
+  const [data, setData] = useState<ProfessorData | null>(null);
 
   useEffect(() => {
+    const fetchProfessor = async () => {
+      const res = await fetch(`/api/professors?id=${professorId}`);
+      const body = await res.json();
+      if (body.data) setData(body.data);
+      setIsLoading(false);
+    };
+
     const fetchDepartments = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/departments");
+        const res = await fetch("/api/departments");
         const body = await res.json();
-        console.log(body);
-        setDepartments(body.data.map((item: { id: number; departmentName: string }) => item.departmentName));
+        if (body.data)
+          setDepartments(body.data.map((item: { id: number; departmentName: string }) => item.departmentName));
       } catch (e) {
         console.log(e);
       }
     };
 
+    fetchProfessor();
     fetchDepartments();
   }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!data) return;
     const formElem = e.target as HTMLFormElement;
     const formElemData = new FormData(formElem);
     const formData = {
       professorName: formElemData.get("professorName"),
       departmentName: formElemData.get("departmentName"),
     };
-    if (JSON.stringify(formData) === JSON.stringify(data) || !data) return;
+    if (
+      JSON.stringify(formData) ===
+        JSON.stringify({ professorName: data.professorName, departmentName: data.departmentName }) ||
+      !data
+    )
+      return;
     const res = await updateProfessor(data.id, formData);
     if (res.isValid) {
       return redirectPage();
@@ -53,10 +67,7 @@ export default function EditProfessorForm() {
   const handleDelete = async () => {
     if (!data) return;
     const res = await deleteProfessor(data.id.toString());
-    if (res.isValid) {
-      updateData(null);
-      return redirectPage();
-    }
+    if (res.isValid) return redirectPage();
     alert(res.error);
   };
 
@@ -66,16 +77,18 @@ export default function EditProfessorForm() {
 
   const closeModal = () => setIsShowing(false);
 
-  if (!data) return null;
+  if (isLoading) return null;
+  if (!data) return redirect("/professors");
   return (
     <>
+      <h1 className="text-2xl font-bold mb-8">교수 정보 수정</h1>
       <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
         <table>
           <tbody>
             <tr>
               <td>교수명</td>
               <td>
-                <TextField name="professorName" size="small" defaultValue={(data as ProfessorData).professorName} />
+                <TextField name="professorName" size="small" defaultValue={data.professorName} />
                 <FormLabel error>{errors?.professorName && <p>{errors.professorName[0]}</p>}</FormLabel>
               </td>
             </tr>
@@ -99,9 +112,14 @@ export default function EditProfessorForm() {
             <Delete fontSize="small" /> 삭제
           </Button>
         </p>
-        <Button type="submit" variant="contained" disableElevation>
-          수정하기
-        </Button>
+        <div className="flex gap-4">
+          <Button onClick={redirectPage} variant="contained" fullWidth disableElevation>
+            취소
+          </Button>
+          <Button type="submit" variant="contained" fullWidth disableElevation>
+            수정하기
+          </Button>
+        </div>
       </form>
       {isShowing && data && (
         <ProfessorDeleteModal
