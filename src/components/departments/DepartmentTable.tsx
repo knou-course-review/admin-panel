@@ -1,5 +1,3 @@
-"use client";
-
 import DepartmentTableRow from "./DepartmentTableRow";
 import type { DepartmentData } from "./DepartmentsContent";
 

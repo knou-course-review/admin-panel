@@ -1,28 +1,40 @@
 "use client";
 
-import { useContext, useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, type FormEvent } from "react";
+import { redirect, useRouter } from "next/navigation";
 import { Delete } from "@mui/icons-material";
 import { Button, TextField } from "@mui/material";
 import DepartmentDeleteModal from "./DepartmentDeleteModal";
 import { deleteDepartment, updateDepartment } from "@/actions/department";
-import { EditContext } from "@/contexts/edit/EditContextProvider";
 import type { DepartmentData } from "./DepartmentsContent";
 
-export default function EditDepartmentForm() {
+export default function EditDepartmentForm({ departmentId }: { departmentId: string }) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [isShowing, setIsShowing] = useState(false);
   const [errors, setErrors] = useState<string[] | undefined>();
-  const { data, updateData } = useContext(EditContext);
+  const [data, setData] = useState<DepartmentData | null>(null);
+
+  useEffect(() => {
+    const fetchDepartment = async () => {
+      const res = await fetch(`/api/departments?id=${departmentId}`);
+      const body = await res.json();
+      if (body.data) setData(body.data);
+      setIsLoading(false);
+    };
+
+    fetchDepartment();
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!data) return;
     const formElem = e.target as HTMLFormElement;
     const formElemData = new FormData(formElem);
     const formData = {
       departmentName: formElemData.get("departmentName"),
     };
-    if (JSON.stringify(formData) === JSON.stringify(data) || !data) return;
+    if (JSON.stringify(formData) === JSON.stringify({ departmentName: data.departmentName })) return;
     const res = await updateDepartment(data.id, formData);
     if (res.isValid) {
       return redirectPage();
@@ -36,10 +48,7 @@ export default function EditDepartmentForm() {
   const handleDelete = async () => {
     if (!data) return;
     const res = await deleteDepartment(data.id.toString());
-    if (res.isValid) {
-      updateData(null);
-      return redirectPage();
-    }
+    if (res.isValid) return redirectPage();
     alert(res.error);
   };
 
@@ -49,9 +58,11 @@ export default function EditDepartmentForm() {
 
   const closeModal = () => setIsShowing(false);
 
-  if (!data) return null;
+  if (isLoading) return null;
+  if (!data) return redirect("/departments");
   return (
     <>
+      <h1 className="text-2xl font-bold mb-8">학과 정보 수정</h1>
       <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
         <table>
           <tbody>
