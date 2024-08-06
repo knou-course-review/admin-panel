@@ -17,10 +17,10 @@ export default function DepartmentsContent() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/departments");
+        const res = await fetch("/api/get-departments");
         const body = await res.json();
         console.log(body);
-        setData(body.data);
+        setData(body);
       } catch (e) {
         console.log(e);
       }

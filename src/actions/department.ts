@@ -4,6 +4,14 @@ import { api } from "@/utils/api";
 import { getSession } from "@/lib/auth";
 import { DepartmentFormSchema } from "@/schema/department";
 
+export async function getDepartments() {
+  const res = await api.get("/api/v1/departments");
+  console.log(res);
+  const body = await res.json();
+  console.log(body);
+  return body.data;
+}
+
 export async function addDepartment(formData: FormData) {
   // Return early if not admin
   const userSession = await getSession();
