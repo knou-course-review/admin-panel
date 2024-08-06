@@ -2,6 +2,7 @@
 
 import { useContext, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Delete } from "@mui/icons-material";
 import { Button, TextField } from "@mui/material";
 import DepartmentDeleteModal from "./DepartmentDeleteModal";
 import { deleteDepartment, updateDepartment } from "@/actions/department";
@@ -51,23 +52,25 @@ export default function EditDepartmentForm() {
   if (!data) return null;
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
         <table>
           <tbody>
             <tr>
               <td>학과명</td>
               <td>
-                <TextField name="departmentName" size="small" defaultValue={data.departmentName} />
+                <TextField name="departmentName" size="small" defaultValue={(data as DepartmentData).departmentName} />
               </td>
             </tr>
           </tbody>
         </table>
         {errors && <p>{errors[0]}</p>}
-        <Button variant="contained" onClick={openModal} disableElevation>
-          삭제
-        </Button>
+        <p className="self-end">
+          <Button variant="text" onClick={openModal} disableElevation>
+            <Delete fontSize="small" /> 삭제
+          </Button>
+        </p>
         <Button type="submit" variant="contained" disableElevation>
-          등록하기
+          수정하기
         </Button>
       </form>
       {isShowing && data && (
