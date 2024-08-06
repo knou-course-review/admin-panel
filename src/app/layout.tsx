@@ -1,10 +1,10 @@
 import { Inter } from "next/font/google";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import NavBar from "@/components/NavBar";
+import TanstackQueryProvider from "@/contexts/tanstack/TanstackQueryProvider";
 import ThemeContextProvider from "@/contexts/theme/ThemeContextProvider";
 import type { Metadata } from "next";
 import "./globals.css";
-import { EditContextProvider } from "@/contexts/edit/EditContextProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,12 +23,12 @@ export default function RootLayout({
       <body className={inter.className}>
         <InitColorSchemeScript defaultMode="system" />
         <ThemeContextProvider>
-          <EditContextProvider>
+          <TanstackQueryProvider>
             <div className="grid grid-cols-[auto_1fr] overflow-hidden">
               <NavBar />
               <main className="h-dvh overflow-auto p-10">{children}</main>
             </div>
-          </EditContextProvider>
+          </TanstackQueryProvider>
         </ThemeContextProvider>
       </body>
     </html>

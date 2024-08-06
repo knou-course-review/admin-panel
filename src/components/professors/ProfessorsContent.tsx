@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Button } from "@mui/material";
 import ProfessorTable from "./ProfessorTable";
 
 export type ProfessorData = {
@@ -12,17 +12,16 @@ export type ProfessorData = {
 };
 
 export default function ProfessorsContent() {
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<ProfessorData[]>([]);
-  const [filterOption, setFilterOption] = useState("학과 선택");
-  const [sortOption, setSortOption] = useState("등록순");
 
   useEffect(() => {
     const fetchProfessors = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/professors");
+        const res = await fetch("/api/professors");
         const body = await res.json();
-        console.log(body);
-        setData(body.data);
+        if (body.data) setData(body.data);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -37,15 +36,8 @@ export default function ProfessorsContent() {
         <Button variant="contained" className="mr-auto" disableElevation>
           <Link href="/professors/new">교수 등록</Link>
         </Button>
-        <Select size="small" value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
-          <MenuItem value={"학과 선택"}>학과 선택</MenuItem>
-        </Select>
-        <Select size="small" value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-          <MenuItem value={"등록순"}>등록순</MenuItem>
-          <MenuItem value={"이름순"}>이름순</MenuItem>
-        </Select>
       </div>
-      <ProfessorTable professors={data} />
+      {isLoading ? <div className="w-full text-center">Loading...</div> : <ProfessorTable professors={data} />}
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Button } from "@mui/material";
 import DepartmentTable from "./DepartmentTable";
 
 export type DepartmentData = {
@@ -11,16 +11,16 @@ export type DepartmentData = {
 };
 
 export default function DepartmentsContent() {
-  const [sortOption, setSortOption] = useState("등록순");
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<DepartmentData[]>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("/api/get-departments");
+        const res = await fetch("/api/departments");
         const body = await res.json();
-        console.log(body);
-        setData(body);
+        if (body.data) setData(body.data);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -35,12 +35,8 @@ export default function DepartmentsContent() {
         <Button variant="contained" className="mr-auto" disableElevation>
           <Link href="/departments/new">학과 등록</Link>
         </Button>
-        <Select size="small" value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-          <MenuItem value={"등록순"}>등록순</MenuItem>
-          <MenuItem value={"학과명순"}>학과명순</MenuItem>
-        </Select>
       </div>
-      <DepartmentTable departments={data} />
+      {isLoading ? <div className="w-full text-center">Loading...</div> : <DepartmentTable departments={data} />}
     </>
   );
 }

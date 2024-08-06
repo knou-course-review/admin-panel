@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Button } from "@mui/material";
 import CourseTable from "./CourseTable";
+import PageNavigator from "../PageNavigator";
 
 export type CourseData = {
   id: number;
@@ -17,52 +19,29 @@ export type CourseData = {
   semester: string;
 };
 
+const fetchAllCourses = (page = 1) => fetch(`/api/courses?page=${page}`).then((res) => res.json());
+
 export default function CoursesContent() {
-  const [filterOption, setFilterOption] = useState("학과 선택");
-  const [sortOption, setSortOption] = useState("등록순");
-  const [data, setData] = useState<CourseData[]>([]);
+  const [page, setPage] = useState(1);
+  const { data, error, isFetching } = useQuery({
+    queryKey: ["all-courses", page],
+    queryFn: () => fetchAllCourses(page),
+    placeholderData: keepPreviousData,
+  });
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await fetch("http://15.164.13.1/api/v1/courses");
-        const body = await res.json();
-        console.log(body);
-        setData(body.data);
-      } catch (e) {
-        console.log(e);
-      }
-    };
+  const handlePageSelect = (value: number) => setPage(value);
 
-    fetchCourses();
-  }, []);
-
+  if (error) return <div className="flex flex-col gap-4">에러가 발생했습니다!</div>;
+  if (isFetching) return <div className="w-full text-center">Loading ...</div>;
   return (
     <>
       <div className="flex gap-4 mb-4">
         <Button variant="contained" className="mr-auto" disableElevation>
           <Link href="/courses/new">강의 등록</Link>
         </Button>
-        <Select
-          size="small"
-          value={filterOption}
-          onChange={(e) => setFilterOption(e.target.value)}
-          disabled={data.length === 0}
-        >
-          <MenuItem value={"학과 선택"}>학과 선택</MenuItem>
-        </Select>
-        <Select
-          size="small"
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          disabled={data.length === 0}
-        >
-          <MenuItem value={"등록순"}>등록순</MenuItem>
-          <MenuItem value={"과목명순"}>과목명순</MenuItem>
-          <MenuItem value={"평점순"}>평점순 (미정)</MenuItem>
-        </Select>
       </div>
-      <CourseTable courses={data} />
+      <CourseTable courses={data.content} />
+      <PageNavigator currentPage={data.pageNumber} pages={data.totalPages} handlePageSelect={handlePageSelect} />
     </>
   );
 }

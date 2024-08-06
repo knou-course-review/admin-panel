@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       const res = await api.get(`/api/v2/departments?page=${pageQuery}`);
       if (res.status === 200) {
         const body = await res.json();
-        return NextResponse.json({ data: body.data });
+        return NextResponse.json(body.data);
       }
     } catch (e) {
       console.log(e);
