@@ -1,24 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import DepartmentTableRow from "./DepartmentTableRow";
-import { DepartmentData } from "./DepartmentsContent";
-import DepartmentDeleteModal from "./DepartmentDeleteModal";
+import type { DepartmentData } from "./DepartmentsContent";
 
 type DepartmentTableProps = {
   departments: DepartmentData[];
 };
 
 export default function DepartmentTable({ departments }: DepartmentTableProps) {
-  const [isShowing, setIsShowing] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] = useState<null | { id: string; departmentName: string }>(null);
-
-  const openModal = (id: string, departmentName: string) => {
-    setIsShowing(true);
-    setSelectedDepartment({ id, departmentName });
-  };
-  const closeModal = () => setIsShowing(false);
-
+  if (departments.length < 1) return <div className="w-full text-center">현재 등록된 학과가 없습니다.</div>;
   return (
     <>
       <table className="table-fixed w-full text-center">
@@ -30,18 +20,10 @@ export default function DepartmentTable({ departments }: DepartmentTableProps) {
         </thead>
         <tbody>
           {departments.map((data) => (
-            <DepartmentTableRow key={data.id} departmentData={{ ...data }} openModal={openModal} />
+            <DepartmentTableRow key={data.id} departmentData={{ ...data }} />
           ))}
         </tbody>
       </table>
-      {isShowing && selectedDepartment && (
-        <DepartmentDeleteModal
-          isShowing={isShowing}
-          id={selectedDepartment.id}
-          departmentName={selectedDepartment.departmentName}
-          closeModal={closeModal}
-        />
-      )}
     </>
   );
 }
