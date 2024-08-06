@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
       const res = await api.get(`/api/v1/course/${idQuery}`);
       if (res.status === 200) {
         const body = await res.json();
-        return NextResponse.json(body.data);
+        return NextResponse.json({ data: body.data });
       }
     } catch (e) {
       console.log(e);
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       const res = await api.get(`/api/v2/courses?page=${pageQuery}`);
       if (res.status === 200) {
         const body = await res.json();
-        return NextResponse.json(body.data);
+        return NextResponse.json({ data: body.data });
       }
     } catch (e) {
       console.log(e);
@@ -31,11 +31,11 @@ export async function GET(req: NextRequest) {
       const res = await api.get("/api/v1/courses");
       if (res.status === 200) {
         const body = await res.json();
-        return NextResponse.json(body.data);
+        return NextResponse.json({ data: body.data });
       }
     } catch (e) {
       console.log(e);
     }
   }
-  return NextResponse.json({});
+  return NextResponse.json({ data: null });
 }

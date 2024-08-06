@@ -10,11 +10,11 @@ export type CourseData = {
   courseName: string;
   departmentName: string;
   professorName: string;
-  // grade: number;
-  // credit: number;
-  // classType: string;
-  // classification: string;
-  // semester: string;
+  grade: number;
+  credit: number;
+  classType: string;
+  classification: string;
+  semester: string;
 };
 
 export default function CoursesContent() {

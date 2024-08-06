@@ -15,11 +15,11 @@ export default function CourseTable({ courses }: CourseTableProps) {
             <td className="xl:w-1/3 p-4">강의</td>
             <td className="w-32 p-4">학과</td>
             <td className="p-4">교수</td>
-            {/* <td className="p-4">학년</td>
+            <td className="p-4">학년</td>
             <td className="p-4">학기</td>
             <td className="p-4">학점</td>
             <td className="p-4">수업유형</td>
-            <td className="p-4">교과</td> */}
+            <td className="p-4">교과</td>
             <td className="w-24"></td>
           </tr>
         </thead>

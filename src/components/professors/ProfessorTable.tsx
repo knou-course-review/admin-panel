@@ -6,6 +6,7 @@ type ProfessorTableProps = {
 };
 
 export default function ProfessorTable({ professors }: ProfessorTableProps) {
+  if (professors.length < 1) return <div className="w-full text-center">현재 등록된 교수가 없습니다.</div>;
   return (
     <table className="table-fixed w-full text-center">
       <thead>

@@ -98,7 +98,7 @@ export default function EditProfessorForm({ professorId }: { professorId: string
                 <Autocomplete
                   size="small"
                   options={departments}
-                  defaultValue={(data as ProfessorData).departmentName}
+                  defaultValue={data.departmentName}
                   renderInput={(params) => <TextField {...params} name="departmentName" label="학과" />}
                 />
                 <FormLabel error>{errors?.departmentName && <p>{errors.departmentName[0]}</p>}</FormLabel>
@@ -124,7 +124,7 @@ export default function EditProfessorForm({ professorId }: { professorId: string
       {isShowing && data && (
         <ProfessorDeleteModal
           isShowing={isShowing}
-          professorName={(data as ProfessorData).professorName}
+          professorName={data.professorName}
           handleDelete={handleDelete}
           closeModal={closeModal}
         />
