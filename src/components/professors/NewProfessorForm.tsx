@@ -41,7 +41,7 @@ export default function NewProfessorForm() {
   const redirectPage = () => router.push("/professors");
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
       <table>
         <tbody>
           <tr>

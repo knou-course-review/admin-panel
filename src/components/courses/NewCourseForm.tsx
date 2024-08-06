@@ -120,7 +120,7 @@ export default function NewCourseForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
       <table>
         <tbody>
           <tr>
