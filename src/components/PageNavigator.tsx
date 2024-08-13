@@ -21,7 +21,7 @@ const getButtonArray = (totalBatches: number, currentBatch: number, totalPages: 
 export default function PageNavigator({ currentPage, pages, handlePageSelect }: PageNavigatorProps) {
   const [totalBatches] = useState(Math.ceil(pages / 5));
   const [currentBatch, setCurrentBatch] = useState(1);
-  const buttons = useMemo(() => getButtonArray(totalBatches, currentBatch, pages), [currentBatch]);
+  const buttons = useMemo(() => getButtonArray(totalBatches, currentBatch, pages), [currentBatch, pages]);
 
   useEffect(() => {
     handlePageSelect(buttons[0]);

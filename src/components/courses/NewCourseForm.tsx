@@ -39,7 +39,7 @@ export default function NewCourseForm() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/departments");
+        const res = await fetch("/api/departments");
         const body = await res.json();
         setDepartments(body.data);
       } catch (e) {
@@ -48,7 +48,7 @@ export default function NewCourseForm() {
     };
     const fetchProfessors = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/professors");
+        const res = await fetch("/api/professors");
         const body = await res.json();
         setAllProfessors(body.data);
       } catch (e) {
@@ -112,7 +112,7 @@ export default function NewCourseForm() {
     setError({ isError: true, msg: "* 오류가 발생했습니다. 나중에 다시 시도해 주세요." });
   };
 
-  const redirectPage = () => router.push("/courses");
+  const redirectPage = () => router.push("/main/courses");
 
   const handleErrors = (errors: { [key: string]: string[] }) => {
     const keys = Object.keys(errors);
