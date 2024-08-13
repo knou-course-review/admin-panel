@@ -1,25 +1,20 @@
-"use client";
-
 import Link from "next/link";
-import {
-  AccountCircle,
-  Domain,
-  DomainAdd,
-  Group,
-  GroupAdd,
-  Groups,
-  LibraryBooksOutlined,
-  Logout,
-  PostAdd,
-} from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import Domain from "@mui/icons-material/Domain";
+import DomainAdd from "@mui/icons-material/DomainAdd";
+import Group from "@mui/icons-material/Group";
+import GroupAdd from "@mui/icons-material/GroupAdd";
+import Groups from "@mui/icons-material/Groups";
+import LibraryBooksOutlined from "@mui/icons-material/LibraryBooksOutlined";
+import PostAdd from "@mui/icons-material/PostAdd";
+import LogoutButton from "./LogoutButton";
 
 export default function NavBar() {
-  const logout = () => {};
+  // fetch and display username
   return (
     <div className="flex flex-col w-52 max-h-dvh p-6 list-none bg-neutral-950 text-white">
       <div className="mb-8 font-bold">
-        <AccountCircle fontSize="small" /> admin_12345
+        <AccountCircle fontSize="small" /> {"${username}"}
       </div>
       <div className="flex flex-col gap-2 mb-6">
         <div>
@@ -47,17 +42,17 @@ export default function NavBar() {
         </div>
         <li>
           <Link href="/main/departments/new">
-            <DomainAdd fontSize="small" /> 학과 등록
+            <DomainAdd fontSize="small" /> 학과 추가
           </Link>
         </li>
         <li>
           <Link href="/main/professors/new">
-            <GroupAdd fontSize="small" /> 교수 등록
+            <GroupAdd fontSize="small" /> 교수 추가
           </Link>
         </li>
         <li>
           <Link href="/main/courses/new">
-            <PostAdd fontSize="small" /> 강의 등록
+            <PostAdd fontSize="small" /> 강의 추가
           </Link>
         </li>
       </div>
@@ -71,11 +66,7 @@ export default function NavBar() {
           </Link>
         </li>
       </div>
-      <li className="mt-auto self-end">
-        <IconButton onClick={logout}>
-          <Logout sx={{ color: "white" }} />
-        </IconButton>
-      </li>
+      <LogoutButton />
     </div>
   );
 }

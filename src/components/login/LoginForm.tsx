@@ -40,12 +40,11 @@ export default function LoginForm() {
       password: formData.password.value as string,
     };
     const res = await login(loginCredentials);
-    if (res?.isValid) {
-      // save session
+    if (res.isValid) {
       return router.push("/");
-    } else if (res?.errors) {
-      updateFormData("username", formData.username.value, true, res?.errors.username && res?.errors.username[0]);
-      updateFormData("password", formData.password.value, true, res?.errors.password && res?.errors.password[0]);
+    } else if (res.errors) {
+      updateFormData("username", formData.username.value, true, res.errors.username && res.errors.username[0]);
+      updateFormData("password", formData.password.value, true, res.errors.password && res.errors.password[0]);
       setPending(false);
       return;
     }
@@ -54,7 +53,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex w-100">
+    <div className="flex w-80">
       <form onSubmit={handleLogin} className="w-full flex flex-col gap-4">
         <div>
           <TextField

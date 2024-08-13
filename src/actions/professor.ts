@@ -64,7 +64,7 @@ export async function deleteProfessor(professorId: string) {
   // Return early if not admin
   const userSession = await getSession();
   // TODO: Decrypt token here and check expiry & admin role
-  if (!userSession) return { isValid: false };
+  if (!userSession.isLoggedIn || !userSession.token) return { isValid: false };
 
   try {
     const res = await api.delete(`/api/v1/professor/${professorId}`, userSession.token);

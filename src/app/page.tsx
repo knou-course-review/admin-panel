@@ -1,12 +1,14 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import LoginForm from "@/components/login/LoginForm";
+import { getSession } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const userSession = await getSession();
+  if (userSession.isLoggedIn && userSession.payload?.role === "ADMIN") redirect("/main");
   return (
-      <div className="text-center w-full">
-        <p className="mb-6">KNOUS 어드민패널 입니다.</p>
-        <p>
-          <Link href="/login">로그인페이지로 이동 →</Link>
-        </p>
-      </div>
+    <div className="grid w-dvw min-h-dvh place-content-center">
+      <h1 className="font-bold text-lg mb-8 text-center">KNOU 어드민 패널</h1>
+      <LoginForm />
+    </div>
   );
 }
