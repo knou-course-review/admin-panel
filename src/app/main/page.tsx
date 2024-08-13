@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function MemberHome() {
+export default function AdminHome() {
   return (
     <div className="w-full">
       <h1 className="text-2xl font-bold mb-8">👋 Welcome!</h1>

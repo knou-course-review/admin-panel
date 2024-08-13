@@ -1,6 +1,6 @@
 import NavBar from "@/components/NavBar";
 
-export default function MemberLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[auto_1fr] overflow-hidden">
       <NavBar />

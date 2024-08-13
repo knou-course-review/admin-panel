@@ -61,8 +61,8 @@ export default function NavBar() {
           <span className="font-semibold text-sm text-slate-300">관리</span>
         </div>
         <li>
-          <Link href="/main/members">
-            <Groups fontSize="small" /> 회원 관리
+          <Link href="/main/users">
+            <Groups fontSize="small" /> 유저 관리
           </Link>
         </li>
       </div>
