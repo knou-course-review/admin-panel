@@ -33,7 +33,7 @@ export default function DepartmentsContent() {
     <>
       <div className="flex gap-4 mb-4">
         <Button variant="contained" className="mr-auto" disableElevation>
-          <Link href="/departments/new">학과 등록</Link>
+          <Link href="/main/departments/new">학과 등록</Link>
         </Button>
       </div>
       {isLoading ? <div className="w-full text-center">Loading...</div> : <DepartmentTable departments={data} />}

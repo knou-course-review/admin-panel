@@ -19,7 +19,7 @@ export default function CourseTableRow({ courseData }: CourseTableRowProps) {
       <td className="p-2">{courseData.classType}</td>
       <td className="p-2">{courseData.classification}</td>
       <td className="p-2">
-        <Link href={`/courses/edit/${courseData.id.toString()}`}>
+        <Link href={`/main/courses/edit/${courseData.id.toString()}`}>
           <IconButton>
             <Edit fontSize="small" />
           </IconButton>

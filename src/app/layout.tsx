@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Noto_Sans_KR } from "next/font/google";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import NavBar from "@/components/NavBar";
 import TanstackQueryProvider from "@/contexts/tanstack/TanstackQueryProvider";
@@ -6,7 +6,7 @@ import ThemeContextProvider from "@/contexts/theme/ThemeContextProvider";
 import type { Metadata } from "next";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const noto_sans_kr = Noto_Sans_KR({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "KNOU 어드민패널",
@@ -20,15 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={noto_sans_kr.className}>
         <InitColorSchemeScript defaultMode="system" />
         <ThemeContextProvider>
-          <TanstackQueryProvider>
-            <div className="grid grid-cols-[auto_1fr] overflow-hidden">
-              <NavBar />
-              <main className="h-dvh overflow-auto p-10">{children}</main>
-            </div>
-          </TanstackQueryProvider>
+          <TanstackQueryProvider>{children}</TanstackQueryProvider>
         </ThemeContextProvider>
       </body>
     </html>

@@ -37,7 +37,7 @@ export default function CoursesContent() {
     <>
       <div className="flex gap-4 mb-4">
         <Button variant="contained" className="mr-auto" disableElevation>
-          <Link href="/courses/new">강의 등록</Link>
+          <Link href="/main/courses/new">강의 등록</Link>
         </Button>
       </div>
       <CourseTable courses={data.content} />

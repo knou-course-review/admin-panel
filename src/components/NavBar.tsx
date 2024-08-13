@@ -26,17 +26,17 @@ export default function NavBar() {
           <span className="font-semibold text-sm text-slate-300">조회</span>
         </div>
         <li>
-          <Link href="/departments">
+          <Link href="/main/departments">
             <Domain fontSize="small" /> 학과 목록
           </Link>
         </li>
         <li>
-          <Link href="/professors">
+          <Link href="/main/professors">
             <Group fontSize="small" /> 교수 목록
           </Link>
         </li>
         <li>
-          <Link href="/courses">
+          <Link href="/main/courses">
             <LibraryBooksOutlined fontSize="small" /> 강의 목록
           </Link>
         </li>
@@ -46,17 +46,17 @@ export default function NavBar() {
           <span className="font-semibold text-sm text-slate-300">신규 등록</span>
         </div>
         <li>
-          <Link href="/departments/new">
+          <Link href="/main/departments/new">
             <DomainAdd fontSize="small" /> 학과 등록
           </Link>
         </li>
         <li>
-          <Link href="/professors/new">
+          <Link href="/main/professors/new">
             <GroupAdd fontSize="small" /> 교수 등록
           </Link>
         </li>
         <li>
-          <Link href="/courses/new">
+          <Link href="/main/courses/new">
             <PostAdd fontSize="small" /> 강의 등록
           </Link>
         </li>
@@ -66,7 +66,7 @@ export default function NavBar() {
           <span className="font-semibold text-sm text-slate-300">관리</span>
         </div>
         <li>
-          <Link href="/members">
+          <Link href="/main/members">
             <Groups fontSize="small" /> 회원 관리
           </Link>
         </li>

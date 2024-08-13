@@ -37,6 +37,22 @@ export async function decrypt(session: string | undefined = "") {
   }
 }
 
+// Decode only payload
+function base64UrlDecode(base64Url: string) {
+  base64Url = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+
+  const padding = "=".repeat((4 - (base64Url.length % 4)) % 4);
+  const base64 = base64Url + padding;
+
+  return atob(base64);
+}
+
+function decodeJwtPayload(token: string) {
+  const parts = token.split(".");
+  const payload = base64UrlDecode(parts[1]);
+  return JSON.parse(payload);
+}
+
 // Functions for JWT verification
 export const getJwtSecretKey = () => {
   const secret = process.env.JWT_SECRET;
@@ -82,8 +98,13 @@ export async function saveSession(accessToken: string) {
 
 export async function getSession() {
   const cookie = cookies().get("knousa")?.value;
-  if (!cookie) return null;
-  return { isLoggedIn: true, token: cookie };
+  if (!cookie) return { isLoggedIn: false };
+
+  const currentTime = Date.now();
+  const payload = decodeJwtPayload(cookie) as UserJwtPayload;
+  const expTime = payload.exp * 1000;
+  if (expTime < currentTime || payload.role !== "ADMIN") return { isLoggedIn: false };
+  return { isLoggedIn: true, payload, token: cookie };
 }
 
 export async function deleteSession() {

@@ -1,9 +1,10 @@
 export const api = {
-  get: async (path: string) => {
+  get: async (path: string, token?: string) => {
     const res = await fetch(`${process.env.SERVER_URL}${path}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...(token && { Authorization: "Bearer " + token }),
       },
     });
     if (res.ok) {

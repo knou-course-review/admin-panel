@@ -12,7 +12,7 @@ export default function DepartmentTableRow({ departmentData }: DepartmentTableRo
     <tr className="border border-neutral-400">
       <td className="p-2">{departmentData.departmentName}</td>
       <td className="p-2">
-        <Link href={`/departments/edit/${departmentData.id.toString()}`}>
+        <Link href={`/main/departments/edit/${departmentData.id.toString()}`}>
           <IconButton>
             <Edit fontSize="small" />
           </IconButton>

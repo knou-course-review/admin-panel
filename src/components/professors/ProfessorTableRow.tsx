@@ -13,7 +13,7 @@ export default function ProfessorTableRow({ professorData }: ProfessorTableRowPr
       <td className="p-2">{professorData.professorName}</td>
       <td className="p-2">{professorData.departmentName}</td>
       <td className="p-2">
-        <Link href={`/professors/edit/${professorData.id.toString()}`}>
+        <Link href={`/main/professors/edit/${professorData.id.toString()}`}>
           <IconButton>
             <Edit fontSize="small" />
           </IconButton>

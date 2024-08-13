@@ -34,7 +34,7 @@ export default function ProfessorsContent() {
     <>
       <div className="flex gap-4 mb-4">
         <Button variant="contained" className="mr-auto" disableElevation>
-          <Link href="/professors/new">교수 등록</Link>
+          <Link href="/main/professors/new">교수 등록</Link>
         </Button>
       </div>
       {isLoading ? <div className="w-full text-center">Loading...</div> : <ProfessorTable professors={data} />}
