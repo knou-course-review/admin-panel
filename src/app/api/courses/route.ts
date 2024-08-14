@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
       const res = await api.get(`/api/v1/course/${idQuery}`);
       if (res.status === 200) {
         const body = await res.json();
-        console.log(body);
         return NextResponse.json({ data: body.data });
       }
     } catch (e) {

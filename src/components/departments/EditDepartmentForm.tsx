@@ -52,14 +52,14 @@ export default function EditDepartmentForm({ departmentId }: { departmentId: str
     alert(res.error);
   };
 
-  const redirectPage = () => router.push("/departments");
+  const redirectPage = () => router.push("/main/departments");
 
   const openModal = () => setIsShowing(true);
 
   const closeModal = () => setIsShowing(false);
 
   if (isLoading) return null;
-  if (!data) return redirect("/departments");
+  if (!data) return redirect("/main/departments");
   return (
     <>
       <h1 className="text-2xl font-bold mb-8">학과 정보 수정</h1>

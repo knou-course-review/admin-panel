@@ -1,14 +1,11 @@
 "use client";
 
-import { type FormEvent, useContext, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Delete } from "@mui/icons-material";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { redirect, useRouter } from "next/navigation";
+import Delete from "@mui/icons-material/Delete";
 import { Autocomplete, Button, FormLabel, MenuItem, Select, TextField } from "@mui/material";
 import CourseDeleteModal from "./CourseDeleteModal";
-import useForm from "@/hooks/useForm";
-import { addCourse, deleteCourse } from "@/actions/course";
-import { EditContext, type EditContextData } from "@/contexts/edit/EditContextProvider";
-import { NUMBER_REGEX } from "@/utils/regex";
+import { deleteCourse, updateCourse } from "@/actions/course";
 import { CLASSIFICATIONS } from "@/constants/classifications";
 import { CLASS_TYPES } from "@/constants/class-types";
 import { SEMESTERS } from "@/constants/semesters";
@@ -19,7 +16,9 @@ export type CourseFormData = {
   id: number;
   courseName: string;
   departmentId: number;
+  departmentName: string;
   professorId: number;
+  professorName: string;
   grade: number;
   credit: number;
   classType: string;
@@ -27,148 +26,135 @@ export type CourseFormData = {
   semester: string;
 };
 
-const getInitValues = (data: EditContextData | null) => {
-  if (!data) return [];
-  return [
-    { key: "courseName", value: (data as CourseFormData).courseName },
-    { key: "departmentId", value: null },
-    { key: "professorId", value: null },
-    { key: "grade", value: (data as CourseFormData).grade },
-    { key: "credit", value: (data as CourseFormData).credit },
-    { key: "classType", value: (data as CourseFormData).classType },
-    { key: "classification", value: (data as CourseFormData).classification },
-    { key: "semester", value: (data as CourseFormData).semester },
-  ];
-};
-
-export default function EditCourseForm() {
+export default function EditCourseForm({ courseId }: { courseId: string }) {
   const router = useRouter();
-  const { data, updateData } = useContext(EditContext);
-  const { formData, updateFormData } = useForm(getInitValues(data));
+  const [data, setData] = useState<CourseFormData | null>(null);
   const [departments, setDepartments] = useState<DepartmentData[]>([]);
   const [allProfessors, setAllProfessors] = useState<ProfessorData[]>([]);
   const [departmentSelected, setDepartmentSelected] = useState<DepartmentData | null>(null);
   const [professorSelected, setProfessorSelected] = useState<ProfessorData | null>(null);
   const filteredProfessors = useMemo(
     () => allProfessors.filter((prof) => prof.departmentName === departmentSelected?.departmentName),
-    [departmentSelected]
+    [departmentSelected, allProfessors]
   );
+  const [isLoading, setIsLoading] = useState(true);
   const [isShowing, setIsShowing] = useState(false);
-  const [error, setError] = useState({ isError: false, msg: "" });
+  const [error, setError] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
+    const fetchCourse = async () => {
+      const res = await fetch(`/api/courses?id=${courseId}`);
+      const body = await res.json();
+      if (body.data) {
+        setData(body.data);
+        setDepartmentSelected({ id: body.data.departmentId, departmentName: body.data.departmentName });
+        setProfessorSelected({
+          id: body.data.professorId,
+          professorName: body.data.professorName,
+          departmentName: body.data.departmentName,
+        });
+      }
+    };
+
     const fetchDepartments = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/departments");
+        const res = await fetch("/api/departments");
         const body = await res.json();
-        setDepartments(body.data);
+        if (body.data) setDepartments(body.data);
       } catch (e) {
         console.log(e);
       }
     };
+
     const fetchProfessors = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/professors");
+        const res = await fetch("/api/professors");
         const body = await res.json();
-        setAllProfessors(body.data);
+        if (body.data) setAllProfessors(body.data);
       } catch (e) {
         console.log(e);
       }
     };
 
-    fetchDepartments();
-    fetchProfessors();
-  }, []);
+    const fetchAll = async () => {
+      await fetchDepartments();
+      await fetchProfessors();
+      await fetchCourse();
+      setIsLoading(false);
+    };
 
-  const handleInput = (key: string, input: string) => {
-    if (key === "grade" || key === "credit") {
-      if (!NUMBER_REGEX.test(input)) return;
-      return updateFormData(key, Number(input));
-    }
-    updateFormData(key, input);
-  };
+    fetchAll();
+  }, []);
 
   const handleDepartmentSelect = (_: any, newValue: DepartmentData | null) => {
     if (newValue) {
-      updateFormData("departmentId", newValue.id);
       setDepartmentSelected(newValue);
     } else {
-      updateFormData("departmentId", null);
       setDepartmentSelected(null);
     }
-    updateFormData("professorId", null);
     setProfessorSelected(null);
   };
 
   const handleProfessorSelect = (_: any, newValue: ProfessorData | null) => {
     if (!newValue) {
-      updateFormData("professorId", null);
       setDepartmentSelected(null);
       return;
     }
-    updateFormData("professorId", newValue.id);
     setProfessorSelected(newValue);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
     const courseData = {
-      courseName: formData.courseName.value as string,
-      departmentId: formData.departmentId.value as number,
-      professorId: formData.professorId.value as number,
-      grade: formData.grade.value as number,
-      credit: formData.credit.value as number,
-      classType: formData.classType.value as string,
-      classification: formData.classification.value as string,
-      semester: formData.semester.value as string,
+      courseName: formData.get("courseName"),
+      departmentId: departmentSelected?.id,
+      professorId: professorSelected?.id,
+      grade: Number(formData.get("grade")),
+      credit: Number(formData.get("credit")),
+      classType: formData.get("classType"),
+      classification: formData.get("classification"),
+      semester: formData.get("semester"),
     };
-    const res = await addCourse(courseData);
-    if (res.isValid) {
+
+    const res = await updateCourse(courseId, courseData);
+    if (res?.isValid) {
       return redirectPage();
     }
-    if (res.errors) {
-      return handleErrors(res.errors);
+    if (res?.errors) {
+      return setError(res.errors);
     }
-    setError({ isError: true, msg: "* 오류가 발생했습니다. 나중에 다시 시도해 주세요." });
+    setError({ unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] });
   };
 
   const handleDelete = async () => {
     if (!data) return;
     const res = await deleteCourse(data.id.toString());
-    if (res.isValid) {
-      updateData(null);
-      return redirectPage();
-    }
+    if (res.isValid) return redirectPage();
     alert(res.error);
   };
 
-  const redirectPage = () => router.push("/courses");
+  const redirectPage = () => router.push("/main/courses");
 
   const openModal = () => setIsShowing(true);
 
   const closeModal = () => setIsShowing(false);
 
-  const handleErrors = (errors: { [key: string]: string[] }) => {
-    const keys = Object.keys(errors);
-    keys.forEach((key) => updateFormData(key, formData[key].value, true, errors[key]![0]));
-  };
-
-  if (!data) return null;
+  if (isLoading) return null;
+  if (!data) return redirect("/courses");
   return (
     <>
+      <h1 className="text-2xl font-bold mb-8">강의 정보 수정</h1>
       <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
         <table>
           <tbody>
             <tr>
               <td>강의명</td>
               <td>
-                <TextField
-                  size="small"
-                  value={formData.courseName.value}
-                  onChange={(e) => handleInput("courseName", e.target.value)}
-                />
+                <TextField name="courseName" size="small" defaultValue={data.courseName} />
                 <br />
-                {formData.courseName.error && <FormLabel error>{formData.courseName.errorMsg}</FormLabel>}
+                {error.courseName && <FormLabel error>{error.courseName[0]}</FormLabel>}
               </td>
             </tr>
             <tr>
@@ -180,10 +166,10 @@ export default function EditCourseForm() {
                   getOptionLabel={(option) => option.departmentName}
                   value={departmentSelected}
                   onChange={handleDepartmentSelect}
-                  renderInput={(params) => <TextField {...params} name="departmentName" label="학과" />}
+                  renderInput={(params) => <TextField {...params} label="학과" />}
                 />
                 <br />
-                {formData.departmentId.error && <FormLabel error>{formData.departmentId.errorMsg}</FormLabel>}
+                {error.departmentId && <FormLabel error>{error.departmentId[0]}</FormLabel>}
               </td>
             </tr>
             <tr>
@@ -198,7 +184,6 @@ export default function EditCourseForm() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      name="professorName"
                       label={
                         departmentSelected
                           ? filteredProfessors.length === 0
@@ -211,17 +196,13 @@ export default function EditCourseForm() {
                   disabled={filteredProfessors.length === 0}
                 />
                 <br />
-                {formData.professorId.error && <FormLabel error>{formData.professorId.errorMsg}</FormLabel>}
+                {error.professorId && <FormLabel error>{error.professorId[0]}</FormLabel>}
               </td>
             </tr>
             <tr>
               <td>교과구분</td>
               <td>
-                <Select
-                  size="small"
-                  value={formData.classification.value}
-                  onChange={(e) => updateFormData("classification", e.target.value)}
-                >
+                <Select name="classification" size="small" defaultValue={data.classification}>
                   {Object.values(CLASSIFICATIONS).map((key) => (
                     <MenuItem key={key} value={key}>
                       {key}
@@ -229,30 +210,21 @@ export default function EditCourseForm() {
                   ))}
                 </Select>
                 <br />
-                {formData.classification.error && <FormLabel error>{formData.classification.errorMsg}</FormLabel>}
+                {error.classification && <FormLabel error>{error.classification[0]}</FormLabel>}
               </td>
             </tr>
             <tr>
               <td>학점</td>
               <td>
-                <TextField
-                  size="small"
-                  placeholder="예: 3"
-                  value={formData.credit.value ?? ""}
-                  onChange={(e) => handleInput("credit", e.target.value)}
-                />
+                <TextField name="credit" size="small" placeholder="예: 3" defaultValue={data.credit ?? ""} />
                 <br />
-                {formData.credit.error && <FormLabel error>{formData.credit.errorMsg}</FormLabel>}
+                {error.credit && <FormLabel error>{error.credit[0]}</FormLabel>}
               </td>
             </tr>
             <tr>
               <td>유형</td>
               <td>
-                <Select
-                  size="small"
-                  value={formData.classType.value}
-                  onChange={(e) => updateFormData("classType", e.target.value)}
-                >
+                <Select name="classType" size="small" defaultValue={data.classType}>
                   {Object.values(CLASS_TYPES).map((key) => (
                     <MenuItem key={key} value={key}>
                       {key}
@@ -264,17 +236,8 @@ export default function EditCourseForm() {
             <tr>
               <td>학년 / 학기</td>
               <td>
-                <TextField
-                  size="small"
-                  placeholder={`예: 1`}
-                  value={formData.grade.value ?? ""}
-                  onChange={(e) => handleInput("grade", e.target.value)}
-                />
-                <Select
-                  size="small"
-                  value={formData.semester.value}
-                  onChange={(e) => updateFormData("semester", e.target.value)}
-                >
+                <TextField name="grade" size="small" placeholder={`예: 1`} defaultValue={data.grade ?? ""} />
+                <Select name="semester" size="small" defaultValue={data.semester}>
                   {Object.values(SEMESTERS).map((key) => (
                     <MenuItem key={key} value={key}>
                       {key}
@@ -282,24 +245,30 @@ export default function EditCourseForm() {
                   ))}
                 </Select>
                 <br />
-                {formData.grade.error && <FormLabel error>{formData.grade.errorMsg}</FormLabel>}
+                {error.grade && <FormLabel error>{error.grade[0]}</FormLabel>}
               </td>
             </tr>
           </tbody>
         </table>
+        {error.unknown && <FormLabel error>{error.unknown[0]}</FormLabel>}
         <p className="self-end">
           <Button variant="text" onClick={openModal} disableElevation>
             <Delete fontSize="small" /> 삭제
           </Button>
         </p>
-        <Button type="submit" variant="contained" disableElevation>
-          수정하기
-        </Button>
+        <div className="flex gap-4">
+          <Button onClick={redirectPage} variant="contained" fullWidth disableElevation>
+            취소
+          </Button>
+          <Button type="submit" variant="contained" fullWidth disableElevation>
+            수정하기
+          </Button>
+        </div>
       </form>
       {isShowing && data && (
         <CourseDeleteModal
           isShowing={isShowing}
-          courseName={(data as CourseFormData).courseName}
+          courseName={data.courseName}
           handleDelete={handleDelete}
           closeModal={closeModal}
         />

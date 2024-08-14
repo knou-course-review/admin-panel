@@ -8,7 +8,7 @@ type CourseTableProps = {
 
 export default function CourseTable({ courses, isFetching }: CourseTableProps) {
   if (isFetching) return <div className="w-full text-center">Loading ...</div>;
-  return courses.length > 1 ? (
+  return courses.length > 0 ? (
     <table className="table-fixed w-full text-center">
       <thead>
         <tr className="border border-b-2 font-bold border-r-neutral-300 border-l-neutral-300 border-t-neutral-300 border-neutral-400 bg-neutral-300 dark:bg-neutral-700">

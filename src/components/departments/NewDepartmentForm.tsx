@@ -24,7 +24,7 @@ export default function NewDepartmentForm() {
     setErrors(["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."]);
   };
 
-  const redirectPage = () => router.push("/departments");
+  const redirectPage = () => router.push("/main/departments");
 
   // if (isRegistered)
   //   return (

@@ -38,7 +38,7 @@ export default function NewProfessorForm() {
     setErrors({ unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] });
   };
 
-  const redirectPage = () => router.push("/professors");
+  const redirectPage = () => router.push("/main/professors");
 
   return (
     <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>

@@ -71,14 +71,14 @@ export default function EditProfessorForm({ professorId }: { professorId: string
     alert(res.error);
   };
 
-  const redirectPage = () => router.push("/professors");
+  const redirectPage = () => router.push("/main/professors");
 
   const openModal = () => setIsShowing(true);
 
   const closeModal = () => setIsShowing(false);
 
   if (isLoading) return null;
-  if (!data) return redirect("/professors");
+  if (!data) return redirect("/main/professors");
   return (
     <>
       <h1 className="text-2xl font-bold mb-8">교수 정보 수정</h1>
