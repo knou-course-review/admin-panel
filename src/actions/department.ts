@@ -4,24 +4,14 @@ import { api } from "@/utils/api";
 import { getSession } from "@/lib/auth";
 import { DepartmentFormSchema } from "@/schema/department";
 
-export async function getDepartments() {
-  const res = await api.get("/api/v1/departments");
-  console.log(res);
-  const body = await res.json();
-  console.log(body);
-  return body.data;
-}
-
 export async function addDepartment(formData: FormData) {
-  // Return early if not admin
   const userSession = await getSession();
-  // TODO: Decrypt token here and check expiry & admin role
   if (!userSession) return { isValid: false };
 
   const form = { departmentName: formData.get("departmentName") };
   const validatedForm = DepartmentFormSchema.safeParse(form);
   if (!validatedForm.success) {
-    return { errors: validatedForm.error.flatten().fieldErrors };
+    return { isValid: false, errors: validatedForm.error.flatten().fieldErrors };
   }
 
   if (validatedForm.success) {
@@ -29,7 +19,6 @@ export async function addDepartment(formData: FormData) {
     try {
       const res = await api.post("/api/v1/department", data, userSession.token);
       const body = await res.json();
-      console.log(body);
       if (body.code === 200) {
         return { isValid: true, data: body.data };
       }
@@ -37,18 +26,16 @@ export async function addDepartment(formData: FormData) {
       console.log(e);
     }
   }
-  return { isValid: false };
+  return { isValid: false, errors: { unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] } };
 }
 
-export async function updateDepartment(departmentId: number, formData: any) {
-  // Return early if not admin
+export async function updateDepartment(departmentId: string, formData: any) {
   const userSession = await getSession();
-  // TODO: Decrypt token here and check expiry & admin role
   if (!userSession) return { isValid: false };
 
   const validatedForm = DepartmentFormSchema.safeParse(formData);
   if (!validatedForm.success) {
-    return { errors: validatedForm.error.flatten().fieldErrors };
+    return { isValid: false, errors: validatedForm.error.flatten().fieldErrors };
   }
 
   if (validatedForm.success) {
@@ -56,7 +43,6 @@ export async function updateDepartment(departmentId: number, formData: any) {
     try {
       const res = await api.put(`/api/v1/department/${departmentId}`, data, userSession.token);
       const body = await res.json();
-      console.log(body);
       if (body.code === 200) {
         return { isValid: true, data: body.data };
       }
@@ -64,13 +50,11 @@ export async function updateDepartment(departmentId: number, formData: any) {
       console.log(e);
     }
   }
-  return { isValid: false };
+  return { isValid: false, errors: { unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] } };
 }
 
 export async function deleteDepartment(departmentId: string) {
-  // Return early if not admin
   const userSession = await getSession();
-  // TODO: Decrypt token here and check expiry & admin role
   if (!userSession.isLoggedIn || !userSession.token) return { isValid: false };
 
   try {
@@ -79,7 +63,6 @@ export async function deleteDepartment(departmentId: string) {
       return { isValid: true };
     } else {
       const body = await res.json();
-      console.log(body);
       return { isValid: false, error: body.error };
     }
   } catch (e) {

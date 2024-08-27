@@ -4,16 +4,14 @@ import { api } from "@/utils/api";
 import { getSession } from "@/lib/auth";
 import { ProfessorFormSchema } from "@/schema/professor";
 
-export async function addProfessor(formData: FormData) {
-  // Return early if not admin
+export async function addProfessor(formData: any) {
   const userSession = await getSession();
-  // TODO: Decrypt token here and check expiry & admin role
-  if (!userSession) return { isValid: false };
+  if (!userSession.isLoggedIn || !userSession.token) return { isValid: false };
 
-  const form = { professorName: formData.get("professorName"), departmentName: formData.get("departmentName") };
-  const validatedForm = ProfessorFormSchema.safeParse(form);
+  const validatedForm = ProfessorFormSchema.safeParse(formData);
+
   if (!validatedForm.success) {
-    return { errors: validatedForm.error.flatten().fieldErrors };
+    return { isValid: false, errors: validatedForm.error.flatten().fieldErrors };
   }
 
   if (validatedForm.success) {
@@ -21,7 +19,6 @@ export async function addProfessor(formData: FormData) {
     try {
       const res = await api.post("/api/v1/professor", data, userSession.token);
       const body = await res.json();
-      console.log(body);
       if (body.code === 200) {
         return { isValid: true, data: body.data };
       }
@@ -30,16 +27,15 @@ export async function addProfessor(formData: FormData) {
       console.log(e);
     }
   }
-  return { isValid: false };
+  return { isValid: false, errors: { unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] } };
 }
 
-export async function updateProfessor(professorId: number, formData: any) {
-  // Return early if not admin
+export async function updateProfessor(professorId: string, formData: any) {
   const userSession = await getSession();
-  // TODO: Decrypt token here and check expiry & admin role
   if (!userSession) return { isValid: false };
 
   const validatedForm = ProfessorFormSchema.safeParse(formData);
+
   if (!validatedForm.success) {
     return { errors: validatedForm.error.flatten().fieldErrors };
   }
@@ -49,7 +45,6 @@ export async function updateProfessor(professorId: number, formData: any) {
     try {
       const res = await api.put(`/api/v1/professor/${professorId}`, data, userSession.token);
       const body = await res.json();
-      console.log(body);
       if (body.code === 200) {
         return { isValid: true, data: body.data };
       }
@@ -57,13 +52,11 @@ export async function updateProfessor(professorId: number, formData: any) {
       console.log(e);
     }
   }
-  return { isValid: false };
+  return { isValid: false, errors: { unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] } };
 }
 
 export async function deleteProfessor(professorId: string) {
-  // Return early if not admin
   const userSession = await getSession();
-  // TODO: Decrypt token here and check expiry & admin role
   if (!userSession.isLoggedIn || !userSession.token) return { isValid: false };
 
   try {
@@ -72,7 +65,6 @@ export async function deleteProfessor(professorId: string) {
       return { isValid: true };
     } else {
       const body = await res.json();
-      console.log(body);
       return { isValid: false, error: body.error };
     }
   } catch (e) {

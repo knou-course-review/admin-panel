@@ -30,7 +30,7 @@ export default function ProfessorDeleteModal({
           * 삭제를 선택할 경우 데이터는 즉시 삭제되며,
           <br /> 복구할 수 없습니다.
         </p>
-        <Button variant="contained" fullWidth onClick={handleClick}>
+        <Button variant="contained" onClick={handleClick} fullWidth disableElevation>
           삭제
         </Button>
       </div>

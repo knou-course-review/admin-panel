@@ -1,70 +1,72 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Autocomplete, Button, FormLabel, TextField } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import Autocomplete from "@mui/material/Autocomplete";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import TextField from "@mui/material/TextField";
 import { addProfessor } from "@/actions/professor";
+import type { DepartmentData } from "../departments/DepartmentsContent";
+
+type FormErrors = {
+  professorName?: string[] | undefined;
+  departmentName?: string[] | undefined;
+  unknown?: string[] | undefined;
+};
 
 export default function NewProfessorForm() {
   const router = useRouter();
-  const [departments, setDepartments] = useState<string[]>([]);
-  const [errors, setErrors] = useState<{ [key: string]: string[] | undefined } | undefined>();
-
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const res = await fetch("/api/departments");
-        const body = await res.json();
-        setDepartments(body.data.map((item: { id: number; departmentName: string }) => item.departmentName));
-      } catch (e) {
-        console.log(e);
-      }
-    };
-
-    fetchDepartments();
-  }, []);
+  const { data, isPending, isError } = useQuery({
+    queryKey: ["all-departments"],
+    queryFn: () => fetch("/api/departments").then((res) => res.json()),
+  });
+  const [error, setError] = useState<FormErrors>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formElem = e.target as HTMLFormElement;
-    const res = await addProfessor(new FormData(formElem));
-    if (res.isValid) {
-      return redirectPage();
-    }
-    if (res.errors) {
-      return setErrors(res.errors);
-    }
-    setErrors({ unknown: ["* 오류가 발생했습니다. 나중에 다시 시도해 주세요."] });
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const professorData = {
+      professorName: formData.get("professorName"),
+      departmentName: formData.get("departmentName"),
+    };
+    const res = await addProfessor(professorData);
+    if (res.isValid) return redirectPage();
+    if (res.errors) return setError(res.errors);
   };
 
   const redirectPage = () => router.push("/main/professors");
 
+  if (isError)
+    return (
+      <div>
+        오류로 인해 교수 등록에 필요한 학과 데이터를 불러올 수 없습니다.
+        <br />
+        잠시 후 다시 시도해 주세요.
+      </div>
+    );
   return (
-    <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
-      <table>
-        <tbody>
-          <tr>
-            <td>교수명</td>
-            <td>
-              <TextField name="professorName" size="small" />
-              <FormLabel error>{errors?.professorName && <p>{errors.professorName[0]}</p>}</FormLabel>
-            </td>
-          </tr>
-          <tr>
-            <td>학과명</td>
-            <td>
-              <Autocomplete
-                size="small"
-                options={departments}
-                renderInput={(params) => <TextField {...params} name="departmentName" label="학과" />}
-              />
-              <FormLabel error>{errors?.departmentName && <p>{errors.departmentName[0]}</p>}</FormLabel>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      {errors?.unknown && <p>{errors.unknown[0]}</p>}
-      <Button type="submit" variant="contained" disableElevation>
+    <form className="grid grid-cols-[100px,1fr] w-96 gap-y-3 items-center" onSubmit={handleSubmit}>
+      <span className="mt-2 self-start">교수명</span>
+      <div>
+        <TextField name="professorName" size="small" fullWidth />
+        {error.professorName && <FormHelperText error>{error.professorName[0]}</FormHelperText>}
+      </div>
+
+      <span className="mt-2 self-start">학과명</span>
+      <div>
+        <Autocomplete
+          size="small"
+          options={isPending ? [] : data.data}
+          getOptionLabel={(option: DepartmentData) => option.departmentName}
+          renderInput={(params) => <TextField {...params} name="departmentName" placeholder="학과" />}
+        />
+        {error.departmentName && <FormHelperText error>{error.departmentName[0]}</FormHelperText>}
+      </div>
+      {error.unknown && <FormHelperText error>{error.unknown[0]}</FormHelperText>}
+      <Button className="col-span-2 mt-4" type="submit" variant="contained" disableElevation>
         등록하기
       </Button>
     </form>
