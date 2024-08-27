@@ -4,10 +4,13 @@ import {
   experimental_extendTheme as extendTheme,
   Experimental_CssVarsProvider as CssVarsProvider,
 } from "@mui/material/styles";
-import type { ReactNode } from "react";
+import { noto_sans_kr } from "@/constants/next-font";
 
-export default function ThemeContextProvider({ children }: { children: ReactNode }) {
+export default function ThemeContextProvider({ children }: { children: React.ReactNode }) {
   const theme = extendTheme({
+    typography: {
+      fontFamily: noto_sans_kr.style.fontFamily,
+    },
     colorSchemes: {
       // light: {
       //   palette: {

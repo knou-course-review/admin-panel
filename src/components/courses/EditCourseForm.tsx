@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { redirect, useRouter } from "next/navigation";
 import Delete from "@mui/icons-material/Delete";
 import { Autocomplete, Button, FormLabel, MenuItem, Select, TextField } from "@mui/material";
@@ -103,7 +103,7 @@ export default function EditCourseForm({ courseId }: { courseId: string }) {
     setProfessorSelected(newValue);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);

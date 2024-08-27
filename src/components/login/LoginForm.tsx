@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, type FormEvent, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Cancel from "@mui/icons-material/Cancel";
@@ -22,7 +22,7 @@ export default function LoginForm() {
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     const name = e.target.name;
     updateFormData(name, input);
@@ -32,7 +32,7 @@ export default function LoginForm() {
 
   const clearInput = (key: string) => updateFormData(key, "");
 
-  const handleLogin = async (e: FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setPending(true);
     const loginCredentials = {

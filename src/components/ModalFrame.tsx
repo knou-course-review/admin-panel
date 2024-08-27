@@ -1,12 +1,11 @@
 "use client";
 
 import Close from "@mui/icons-material/Close";
-import type { ReactNode } from "react";
 
 type ModalFrameProps = {
   closeModal: () => void;
   title: string;
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export default function ModalFrame({ closeModal, title, children }: ModalFrameProps) {

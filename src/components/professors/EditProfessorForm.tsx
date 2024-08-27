@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { Delete } from "@mui/icons-material";
 import { Autocomplete, Button, FormLabel, TextField } from "@mui/material";
@@ -39,7 +39,7 @@ export default function EditProfessorForm({ professorId }: { professorId: string
     fetchDepartments();
   }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!data) return;
     const formElem = e.target as HTMLFormElement;

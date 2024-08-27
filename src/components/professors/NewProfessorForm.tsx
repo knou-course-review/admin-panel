@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Autocomplete, Button, FormLabel, TextField } from "@mui/material";
 import { addProfessor } from "@/actions/professor";
@@ -13,9 +13,8 @@ export default function NewProfessorForm() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await fetch("http://15.164.13.1/api/v1/departments");
+        const res = await fetch("/api/departments");
         const body = await res.json();
-        console.log(body);
         setDepartments(body.data.map((item: { id: number; departmentName: string }) => item.departmentName));
       } catch (e) {
         console.log(e);
@@ -25,7 +24,7 @@ export default function NewProfessorForm() {
     fetchDepartments();
   }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formElem = e.target as HTMLFormElement;
     const res = await addProfessor(new FormData(formElem));

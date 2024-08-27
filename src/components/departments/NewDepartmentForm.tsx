@@ -1,17 +1,16 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Button, TextField } from "@mui/material";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import { addDepartment } from "@/actions/department";
 
 export default function NewDepartmentForm() {
   const router = useRouter();
   const [errors, setErrors] = useState<string[] | undefined>();
-  // const [isRegistered, setIsRegistered] = useState(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formElem = e.target as HTMLFormElement;
     const res = await addDepartment(new FormData(formElem));
@@ -26,22 +25,6 @@ export default function NewDepartmentForm() {
 
   const redirectPage = () => router.push("/main/departments");
 
-  // if (isRegistered)
-  //   return (
-  //     <div className="flex flex-col w-60 h-36 justify-between items-center">
-  //       <p>
-  //         <strong>[]</strong> 학과가 등록되었습니다!
-  //       </p>
-  //       <div className="flex gap-2">
-  //         <Button variant="contained" disableElevation>
-  //           <Link href={"/departments"}>목록으로</Link>
-  //         </Button>
-  //         <Button variant="contained" onClick={refreshPage} disableElevation>
-  //           추가 등록
-  //         </Button>
-  //       </div>
-  //     </div>
-  //   );
   return (
     <form className="flex flex-col w-96 gap-4" onSubmit={handleSubmit}>
       <table>

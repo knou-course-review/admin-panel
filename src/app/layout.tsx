@@ -1,16 +1,13 @@
-import { Noto_Sans_KR } from "next/font/google";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
-import NavBar from "@/components/NavBar";
 import TanstackQueryProvider from "@/contexts/tanstack/TanstackQueryProvider";
 import ThemeContextProvider from "@/contexts/theme/ThemeContextProvider";
+import { noto_sans_kr } from "@/constants/next-font";
 import type { Metadata } from "next";
 import "./globals.css";
 
-const noto_sans_kr = Noto_Sans_KR({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "KNOU 어드민패널",
-  description: "KNOU 관리자 페이지 입니다.",
+  title: "KNOUK admin panel",
+  description: "KNOUK 관리자페이지 입니다.",
 };
 
 export default function RootLayout({

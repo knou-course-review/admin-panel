@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Autocomplete, Button, FormLabel, MenuItem, Select, TextField } from "@mui/material";
 import useForm from "@/hooks/useForm";
@@ -90,7 +90,7 @@ export default function NewCourseForm() {
     setProfessorSelected(newValue);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const courseData = {
       courseName: formData.courseName.value as string,
