@@ -1,111 +1,72 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Cancel from "@mui/icons-material/Cancel";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { Button, FormHelperText, IconButton, TextField } from "@mui/material";
-import useForm from "@/hooks/useForm";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
 import { login } from "@/actions/login";
 
-const initValues = [
-  { key: "username", value: "" },
-  { key: "password", value: "" },
-];
-
 export default function LoginForm() {
-  const { formData, updateFormData } = useForm(initValues);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<{ username?: string[]; password?: string[] }>({});
   const [isCredentialError, setIsCredentialError] = useState(false);
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
-    const name = e.target.name;
-    updateFormData(name, input);
-  };
-
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
-
-  const clearInput = (key: string) => updateFormData(key, "");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setPending(true);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
     const loginCredentials = {
-      username: formData.username.value as string,
-      password: formData.password.value as string,
+      username: formData.get("username") as string,
+      password: formData.get("password") as string,
     };
     const res = await login(loginCredentials);
     if (res.isValid) {
       return router.push("/");
-    } else if (res.errors) {
-      updateFormData("username", formData.username.value, true, res.errors.username && res.errors.username[0]);
-      updateFormData("password", formData.password.value, true, res.errors.password && res.errors.password[0]);
-      setPending(false);
-      return;
     }
-    setIsCredentialError(true);
+    if (res.errors) {
+      setError(res.errors);
+    } else {
+      setIsCredentialError(true);
+    }
     setPending(false);
   };
 
   return (
-    <div className="flex w-80">
-      <form onSubmit={handleLogin} className="w-full flex flex-col gap-4">
-        <div>
-          <TextField
-            name="username"
-            label="아이디"
-            value={formData.username.value}
-            onChange={handleInput}
-            fullWidth
-            InputProps={{
-              endAdornment:
-                formData.username.value !== "" ? (
-                  <IconButton onClick={() => clearInput("username")}>
-                    <Cancel />
-                  </IconButton>
-                ) : null,
-            }}
-          />
-          {formData.username.error && <FormHelperText error>{formData.username.errorMsg}</FormHelperText>}
-        </div>
-        <div>
-          <TextField
-            name="password"
-            label="비밀번호"
-            value={formData.password.value}
-            type={showPassword ? "text" : "password"}
-            onChange={handleInput}
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <>
-                  <IconButton onClick={handlePasswordVisibility}>
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                  {formData.password.value !== "" ? (
-                    <IconButton onClick={() => clearInput("password")}>
-                      <Cancel />
-                    </IconButton>
-                  ) : null}
-                </>
-              ),
-            }}
-          />
-          {formData.password.error && <FormHelperText error>{formData.password.errorMsg}</FormHelperText>}
-        </div>
-        <div className="text-right">
-          <Link href="">아이디 찾기</Link> | <Link href="">비밀번호 찾기</Link>
-        </div>
-        {isCredentialError && <FormHelperText error>* 잘못된 아이디 또는 비밀번호입니다.</FormHelperText>}
-        <Button type="submit" variant="contained" size="large" className="mt-6" disabled={pending} disableElevation>
-          {pending ? "로그인 중..." : "로그인"}
-        </Button>
-      </form>
-    </div>
+    <form onSubmit={handleLogin} className="flex flex-col w-80 gap-2">
+      <div>
+        <TextField name="username" placeholder="아이디" size="small" fullWidth />
+        {error.username && <FormHelperText error>{error.username[0]}</FormHelperText>}
+      </div>
+      <div>
+        <TextField
+          name="password"
+          placeholder="비밀번호"
+          size="small"
+          type={showPassword ? "text" : "password"}
+          fullWidth
+          InputProps={{
+            endAdornment: (
+              <IconButton size="small" onClick={handlePasswordVisibility}>
+                {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+              </IconButton>
+            ),
+          }}
+        />
+        {error.password && <FormHelperText error>{error.password[0]}</FormHelperText>}
+      </div>
+      {isCredentialError && <FormHelperText error>* 잘못된 아이디 또는 비밀번호입니다.</FormHelperText>}
+      <Button type="submit" variant="contained" className="mt-6" disabled={pending} disableElevation>
+        로그인
+      </Button>
+    </form>
   );
 }

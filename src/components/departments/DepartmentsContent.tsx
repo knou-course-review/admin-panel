@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import Button from "@mui/material/Button";
 import DepartmentTable from "./DepartmentTable";
+import ErrorTable from "../common/ErrorTable";
 
 export type DepartmentData = {
   id: number;
@@ -11,23 +12,10 @@ export type DepartmentData = {
 };
 
 export default function DepartmentsContent() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<DepartmentData[]>([]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await fetch("/api/departments");
-        const body = await res.json();
-        if (body.data) setData(body.data);
-        setIsLoading(false);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-
-    fetchCourses();
-  }, []);
+  const { data, isPending, isError } = useQuery({
+    queryKey: ["all-departments"],
+    queryFn: () => fetch("/api/departments").then((res) => res.json()),
+  });
 
   return (
     <>
@@ -36,7 +24,13 @@ export default function DepartmentsContent() {
           <Link href="/main/departments/new">학과 등록</Link>
         </Button>
       </div>
-      {isLoading ? <div className="w-full text-center">Loading...</div> : <DepartmentTable departments={data} />}
+      {isPending ? (
+        <div className="w-full text-center">Loading...</div>
+      ) : isError ? (
+        <ErrorTable />
+      ) : (
+        <DepartmentTable departments={data.data} />
+      )}
     </>
   );
 }

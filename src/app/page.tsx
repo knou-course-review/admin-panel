@@ -7,7 +7,7 @@ export default async function Home() {
   if (userSession.isLoggedIn && userSession.payload?.role === "ADMIN") redirect("/main");
   return (
     <div className="grid w-dvw min-h-dvh place-content-center">
-      <h1 className="font-bold text-lg mb-8 text-center">KNOU 어드민 패널</h1>
+      <h1 className="font-bold text-lg mb-8 text-center">KNOUK 어드민 패널</h1>
       <LoginForm />
     </div>
   );

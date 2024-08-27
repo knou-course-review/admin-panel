@@ -16,7 +16,7 @@ type SessionPayload = {
 };
 
 const cookieOptions = {
-  name: "knousa",
+  name: "knouka",
   duration: 24 * 60 * 60 * 1000,
 };
 
@@ -97,7 +97,7 @@ export async function saveSession(accessToken: string) {
 }
 
 export async function getSession() {
-  const cookie = cookies().get("knousa")?.value;
+  const cookie = cookies().get("knouka")?.value;
   if (!cookie) return { isLoggedIn: false };
 
   const currentTime = Date.now();
@@ -108,7 +108,7 @@ export async function getSession() {
 }
 
 export async function deleteSession() {
-  const cookie = cookies().get("knousa")?.value;
+  const cookie = cookies().get("knouka")?.value;
   if (!cookie) return;
-  cookies().set("knousa", "", { expires: new Date(0) });
+  cookies().set("knouka", "", { expires: new Date(0) });
 }
