@@ -1,9 +1,9 @@
 "use server";
 
-import { decodeJwtPayload, saveSession } from "@/lib/auth";
+import { saveSession, verifyAuth } from "@/lib/auth";
+import { api } from "@/utils/api";
 import { ErrorSchema } from "@/schema/error";
 import { LoginFormSchema } from "@/schema/login";
-import { api } from "@/utils/api";
 
 export async function login(credentials: { username: string; password: string }) {
   const validatedForm = LoginFormSchema.safeParse(credentials);
@@ -14,9 +14,9 @@ export async function login(credentials: { username: string; password: string })
         const bearerHeader = res.headers.get("Authorization");
         if (!bearerHeader) return { isValid: false, invalidCredentials: true };
         const accessToken = bearerHeader.split("Bearer ")[1];
-        const payload = decodeJwtPayload(accessToken);
+        const payload = await verifyAuth(accessToken);
         if (payload.role === "ADMIN") {
-          saveSession(accessToken);
+          await saveSession(accessToken, payload.exp * 1000);
           return { isValid: true };
         }
       }
