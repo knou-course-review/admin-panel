@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import ChevronRight from "@mui/icons-material/ChevronRight";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 type PageNavigatorProps = {
   currentPage: number;

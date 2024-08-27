@@ -2,7 +2,7 @@
 
 import Lock from "@mui/icons-material/Lock";
 import LockOpen from "@mui/icons-material/LockOpen";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import type { UserData } from "./UserTable";
 
 export type UserTableRowProps = {

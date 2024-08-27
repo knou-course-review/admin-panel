@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import CourseTable from "./CourseTable";
 import PageNavigator from "../PageNavigator";
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Edit } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import Edit from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
 import type { CourseData } from "./CoursesContent";
 
 type CourseTableRowProps = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import ModalFrame from "../ModalFrame";
 import { changeUserStatus } from "@/actions/user";
 
