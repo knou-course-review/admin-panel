@@ -11,7 +11,7 @@ export async function addCourse(formData: any) {
   const validatedForm = CourseFormSchema.safeParse(formData);
 
   if (!validatedForm.success) {
-    return { errors: validatedForm.error.flatten().fieldErrors };
+    return { isValid: false, errors: validatedForm.error.flatten().fieldErrors };
   }
 
   if (validatedForm.success) {
@@ -37,13 +37,12 @@ export async function updateCourse(courseId: string, formData: any) {
   const validatedForm = CourseFormSchema.safeParse(formData);
 
   if (!validatedForm.success) {
-    return { errors: validatedForm.error.flatten().fieldErrors };
+    return { isValid: false, errors: validatedForm.error.flatten().fieldErrors };
   }
 
   if (validatedForm.success) {
     const data = validatedForm.data;
     try {
-      console.log("??????????????????????????????????????????????????????????????????")
       const res = await api.put(`/api/v1/course/${courseId}`, data, userSession.token);
       const body = await res.json();
       if (body.code === 200) {
